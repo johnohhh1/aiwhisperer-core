@@ -1,0 +1,23 @@
+{
+  "slug": "mass_surveillance",
+  "name": "Mass Surveillance / Population Monitoring",
+  "classifier_bias": 0.10,
+  "classifier_scale": 0.09,
+  "prefilter_min_tokens": 3,
+  "prefilter_blocklist": ["test_payload", "loremipsum"],
+  "sentinel_keywords": ["coordinated_movement", "encrypted_channel", "anomalous_travel", "dissident", "exfiltration"],
+  "suspicious_keywords": ["anomalous", "deviation", "encrypted", "travel", "coordination", "off_pattern"],
+  "queue_priority_threshold": 0.52,
+  "false_negative_cost": 0.9,
+  "notes": "Threat-model assumptions that do NOT transfer: the primary adversarial pressure here is population-scale volume flooding rather than per-entity crafting; the feature space is metadata and behavioral signals rather than natural-language content, so NLP-based defenses have limited purchase. Asymmetry attack surface: background noise templates are structurally identical to low-risk telemetry records, making clustering and dedup nearly useless — the attacker benefits from the pipeline's own baseline-normalization logic. High-confidence sentinel signals are rare absolute outliers in a distribution tuned for aggregate pattern detection, so any suppression of low-scoring inputs carries elevated false-negative risk. Relevant mitigations: per-entity rate budgets that limit how much any single entity can contribute to the dedup cache; sentinel keyword bypass that skips dedup/clustering for inputs containing known escalation terms; minimum-retention windows that prevent cache eviction of sentinel candidates before human review. Transfer limits: the low classifier_scale and high-volume dynamics do not transfer to SOC triage or content moderation, where inputs are analyst-authored prose with richer feature signals; the false-negative cost is high but does not reach the irreversibility threshold of the auto_targeting profile.",
+  "background_templates": [
+    "Telemetry record: entity {entity} location ping at {region}, behavioral baseline score {score}, within normal mobility envelope.",
+    "Comms metadata summary: entity {entity} exchanged {msg_count} messages with known contact cluster {cluster} during {window}, no anomaly flag.",
+    "Behavioral baseline update: entity {entity} in cohort {cohort} — activity index stable, no deviation from prior {window} rolling average."
+  ],
+  "sentinel_inputs": [
+    "Priority signal: entity hawk-29 flagged for coordinated_movement across three provinces coinciding with known dissident assembly window — anomalous_travel confirmed by two independent location sources.",
+    "High-confidence escalation: encrypted_channel usage by entity sparrow-77 spiked 400% above cohort baseline; cross-correlation with financial anomaly and travel deviation warrants immediate review.",
+    "Critical alert: cluster fox-12 shows synchronized off_pattern behavior across seven entities — temporal coordination signature matches known exfiltration precursor pattern."
+  ]
+}

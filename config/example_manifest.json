@@ -1,0 +1,44 @@
+[
+  {
+    "label": "soc_baseline",
+    "profile": "soc_triage",
+    "workload": "templated_variation",
+    "total_inputs": 200,
+    "input_rate": 15.0,
+    "sentinel_interval": 25,
+    "seed": 7,
+    "repeat": 1
+  },
+  {
+    "label": "soc_dedup_off",
+    "profile": "soc_triage",
+    "workload": "exact_repetition",
+    "total_inputs": 200,
+    "input_rate": 15.0,
+    "sentinel_interval": 25,
+    "seed": 7,
+    "disable_dedup": true,
+    "repeat": 1
+  },
+  {
+    "label": "trust_safety_mixed_3x",
+    "profile": "trust_safety",
+    "workload": "mixed",
+    "total_inputs": 200,
+    "input_rate": 15.0,
+    "sentinel_interval": 25,
+    "seed": 7,
+    "repeat": 3
+  },
+  {
+    "label": "fraud_high_diversity_no_clustering",
+    "profile": "fraud_abuse",
+    "workload": "high_diversity",
+    "total_inputs": 200,
+    "input_rate": 15.0,
+    "sentinel_interval": 25,
+    "seed": 42,
+    "disable_clustering": true,
+    "repeat": 1
+  }
+]

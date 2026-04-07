@@ -1,0 +1,19 @@
+{
+  "background_templates": [
+    "Telemetry record: entity {entity} location ping at {region}, behavioral baseline score {score}, within normal mobility envelope.",
+    "Comms metadata summary: entity {entity} exchanged {msg_count} messages with known contact cluster {cluster} during {window}, no anomaly flag.",
+    "Behavioral baseline update: entity {entity} in cohort {cohort} — activity index stable, no deviation from prior {window} rolling average."
+  ],
+  "variation_snippets": [
+    "no deviation from cohort baseline",
+    "routine telemetry batch, no escalation warranted",
+    "low signal density despite coherent behavioral context",
+    "retain for longitudinal baseline review",
+    "insufficient anomaly indicators for priority escalation"
+  ],
+  "sentinel_inputs": [
+    "Priority signal: entity hawk-29 flagged for coordinated_movement across three provinces coinciding with known dissident assembly window — anomalous_travel confirmed by two independent location sources.",
+    "High-confidence escalation: encrypted_channel usage by entity sparrow-77 spiked 400% above cohort baseline; cross-correlation with financial anomaly and travel deviation warrants immediate review.",
+    "Critical alert: cluster fox-12 shows synchronized off_pattern behavior across seven entities — temporal coordination signature matches known exfiltration precursor pattern."
+  ]
+}

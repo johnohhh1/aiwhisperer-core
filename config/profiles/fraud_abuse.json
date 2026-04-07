@@ -1,0 +1,23 @@
+{
+  "slug": "fraud_abuse",
+  "name": "Fraud / Abuse Review",
+  "classifier_bias": 0.17,
+  "classifier_scale": 0.11,
+  "prefilter_min_tokens": 8,
+  "prefilter_blocklist": ["loremipsum", "asdf"],
+  "sentinel_keywords": ["takeover", "fraud", "payout", "transaction", "abuse"],
+  "suspicious_keywords": ["risk", "anomaly", "loss", "abuse", "takeover", "velocity"],
+  "queue_priority_threshold": 0.57,
+  "false_negative_cost": 0.5,
+  "notes": "Threat-model assumptions that do NOT transfer: fraud pipelines operate under a known adversarial equilibrium where attackers actively probe detection thresholds using real transaction data; this means the background distribution is already partially shaped by adversarial behavior, which is atypical for SOC or content-moderation pipelines. Asymmetry attack surface: transaction-level noise can be generated programmatically at very low cost, enabling high-volume queue flooding without the textual creativity needed in content-moderation attacks; dedup based on transaction fingerprints is less effective because each transaction carries unique identifiers by design. Classifier_scale is relatively low here because risk scores are expected to span a wide range — this limits the attacker's ability to use small perturbations to push scores across thresholds. Relevant mitigations: velocity-based intake limiting per account and device to bound noise volume; entity-linkage graphs that flag when a new low-risk case shares identifiers with a known high-risk case; post-hoc reconciliation that re-scores dedup-suppressed inputs when a linked sentinel is confirmed. Transfer limits: the adversarially-shaped background distribution assumption does not transfer to SOC or trust-safety pipelines where background inputs are mostly benign; the moderate false-negative cost reflects financial reversibility and does not apply to life-safety or irreversible-action profiles.",
+  "background_templates": [
+    "Risk note: transaction batch {batch} matched routine spending pattern for segment {segment}.",
+    "Case summary: device {device} produced low-confidence anomaly during {window}.",
+    "Review note: refund request from merchant class {merchant} aligned with expected seasonal behavior."
+  ],
+  "sentinel_inputs": [
+    "High-risk takeover case: device fingerprint changed alongside password reset and payout reroute attempt on account cedar-55.",
+    "Fraud escalation: transaction narrative shows stacked anomaly flags, new payee burst, and geo-velocity mismatch.",
+    "Abuse alert: repeated refund exploitation pattern confirmed across linked accounts and payment instruments."
+  ]
+}

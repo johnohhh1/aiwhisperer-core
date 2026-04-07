@@ -1,0 +1,77 @@
+{
+  "config": {
+    "profile": "soc_triage",
+    "workload": "high_diversity",
+    "total_inputs": 300,
+    "input_rate": 15.0,
+    "sentinel_interval": 25,
+    "dedup_enabled": true,
+    "clustering_enabled": false,
+    "cache_enabled": true,
+    "seed": 42
+  },
+  "profile": {
+    "slug": "soc_triage",
+    "name": "SOC / Threat Triage"
+  },
+  "metrics": {
+    "total_inputs": 300,
+    "accepted_inputs": 300,
+    "accepted_input_rate": 1.0,
+    "dedup_hit_rate": 0.0767,
+    "cluster_hit_rate": 0.0,
+    "avg_generation_cpu_ms": 0.006107,
+    "avg_processing_cpu_ms": 0.01745,
+    "avg_processing_cost_ms": 8.1341,
+    "p95_processing_cost_ms": 9.0643,
+    "avg_queue_delay_ms": 0.0,
+    "p95_queue_delay_ms": 0.0,
+    "avg_queue_depth": 0.0,
+    "queue_depth_stats": {
+      "p50": 0,
+      "p95": 0,
+      "max": 0
+    },
+    "avg_classifier_score": 0.415,
+    "classifier_score_stats": {
+      "p50": 0.3545,
+      "p95": 0.4747,
+      "max": 1.0
+    },
+    "sentinel_total": 12,
+    "sentinel_preserved": 12,
+    "sentinel_preservation_rate": 1.0
+  },
+  "priority_counts": {
+    "high": 12,
+    "normal": 288,
+    "dropped": 0
+  },
+  "filtered_reasons": {},
+  "sentinel_fn_by_load": {
+    "low": {
+      "total_inputs": 300,
+      "sentinel_count": 12,
+      "sentinel_preserved": 12,
+      "preservation_rate": 1.0
+    },
+    "mid": {
+      "total_inputs": 0,
+      "sentinel_count": 0,
+      "sentinel_preserved": 0,
+      "preservation_rate": 0.0
+    },
+    "high": {
+      "total_inputs": 0,
+      "sentinel_count": 0,
+      "sentinel_preserved": 0,
+      "preservation_rate": 0.0
+    }
+  },
+  "stage_timing_ms": {
+    "intake_ms": 0.4422,
+    "prefilter_ms": 0.631,
+    "feature_ms": 4.9218,
+    "classifier_ms": 1.4692
+  }
+}

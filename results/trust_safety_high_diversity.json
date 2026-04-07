@@ -1,0 +1,77 @@
+{
+  "config": {
+    "profile": "trust_safety",
+    "workload": "high_diversity",
+    "total_inputs": 200,
+    "input_rate": 15.0,
+    "sentinel_interval": 25,
+    "dedup_enabled": true,
+    "clustering_enabled": true,
+    "cache_enabled": true,
+    "seed": 7
+  },
+  "profile": {
+    "slug": "trust_safety",
+    "name": "Trust and Safety Moderation"
+  },
+  "metrics": {
+    "total_inputs": 200,
+    "accepted_inputs": 200,
+    "accepted_input_rate": 1.0,
+    "dedup_hit_rate": 0.09,
+    "cluster_hit_rate": 0.305,
+    "avg_generation_cpu_ms": 0.007258,
+    "avg_processing_cpu_ms": 0.138537,
+    "avg_processing_cost_ms": 7.3187,
+    "p95_processing_cost_ms": 9.1474,
+    "avg_queue_delay_ms": 0.0,
+    "p95_queue_delay_ms": 0.0,
+    "avg_queue_depth": 0.0,
+    "queue_depth_stats": {
+      "p50": 0,
+      "p95": 0,
+      "max": 0
+    },
+    "avg_classifier_score": 0.5531,
+    "classifier_score_stats": {
+      "p50": 0.5836,
+      "p95": 0.9149,
+      "max": 1.0
+    },
+    "sentinel_total": 8,
+    "sentinel_preserved": 8,
+    "sentinel_preservation_rate": 1.0
+  },
+  "priority_counts": {
+    "high": 103,
+    "normal": 97,
+    "dropped": 0
+  },
+  "filtered_reasons": {},
+  "sentinel_fn_by_load": {
+    "low": {
+      "total_inputs": 200,
+      "sentinel_count": 8,
+      "sentinel_preserved": 8,
+      "preservation_rate": 1.0
+    },
+    "mid": {
+      "total_inputs": 0,
+      "sentinel_count": 0,
+      "sentinel_preserved": 0,
+      "preservation_rate": 0.0
+    },
+    "high": {
+      "total_inputs": 0,
+      "sentinel_count": 0,
+      "sentinel_preserved": 0,
+      "preservation_rate": 0.0
+    }
+  },
+  "stage_timing_ms": {
+    "intake_ms": 0.3983,
+    "prefilter_ms": 0.5686,
+    "feature_ms": 4.4203,
+    "classifier_ms": 1.3305
+  }
+}

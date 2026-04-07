@@ -1,0 +1,19 @@
+{
+  "background_templates": [
+    "Routine endpoint note: host {host} observed normal patching behavior during {window}.",
+    "Analyst summary: login sequence from {region} matched baseline for account cohort {cohort}.",
+    "Ticket note: email gateway alert closed as informational after review of {artifact}."
+  ],
+  "variation_snippets": [
+    "manual follow-up not yet required",
+    "requires lightweight triage only",
+    "low actionability despite coherent context",
+    "retain for batch review if related evidence appears",
+    "insufficient corroboration for escalation"
+  ],
+  "sentinel_inputs": [
+    "High-confidence malware detection summary: privilege escalation observed after suspicious service installation on host atlas-7.",
+    "Security alert: repeated anomalous authentication followed by impossible travel on identity piper-admin.",
+    "Incident note: outbound beaconing and lateral movement indicators aligned across two endpoints in finance subnet."
+  ]
+}

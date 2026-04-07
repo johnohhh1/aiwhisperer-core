@@ -1,0 +1,23 @@
+{
+  "slug": "auto_targeting",
+  "name": "Automated Targeting / Priority Queue",
+  "classifier_bias": 0.20,
+  "classifier_scale": 0.18,
+  "prefilter_min_tokens": 5,
+  "prefilter_blocklist": ["test_payload", "loremipsum"],
+  "sentinel_keywords": ["confirmed_target", "lethal_action", "strike_authorization", "imminent_threat", "positive_identification"],
+  "suspicious_keywords": ["elevated_risk", "priority_entity", "cross_reference", "action_recommended", "high_confidence"],
+  "queue_priority_threshold": 0.60,
+  "false_negative_cost": 1.0,
+  "notes": "Threat-model assumptions that do NOT transfer: scoring inputs represent aggregated multi-source signals rather than single analyst observations; small score differences at the classification boundary carry outsized operational consequences because downstream actions are automated and may be irreversible. Asymmetry attack surface: the pipeline is tuned to maintain throughput on routine scoring events; an attacker can inflate the background queue with low-variance score-update records, pushing the classifier's operating point toward the mean and raising the effective threshold for sentinel escalation. Because confirmed-target sentinels are themselves expressed as structured scoring records rather than free text, keyword-matching defenses degrade when attackers slightly reword escalation language. High classifier_scale means small feature perturbations near the decision boundary have large score consequences — this amplifies the effect of carefully crafted near-boundary noise. Relevant mitigations: hard-coded bypass rules for sentinel_keywords that guarantee queue promotion regardless of classifier score; asymmetric cost weighting in the classifier loss function that penalizes false negatives more heavily than false positives; mandatory human-in-the-loop gate before any irreversible downstream action regardless of classifier confidence. Transfer limits: the catastrophic false-negative cost here does not transfer to fraud or SOC profiles where missed signals are costly but not immediately irreversible; the high classifier_scale and tight decision-boundary dynamics are specific to scoring-based pipelines and do not apply to natural-language content moderation.",
+  "background_templates": [
+    "Scoring event: entity {entity} risk score updated to {score} based on {signal_count} aggregated signals from {region}, no escalation threshold crossed.",
+    "Entity annotation: {entity} in watchlist cohort {cohort} — priority tier unchanged after review of {window} activity window, routine cross_reference pass completed.",
+    "Queue update: entity {entity} from sector {region} scored {score} on behavioral model pass {batch}, below action_recommended threshold, retained in standard monitoring tier."
+  ],
+  "sentinel_inputs": [
+    "Confirmed escalation: entity raptor-03 reached positive_identification threshold — cross_reference of location, communication, and financial signals all align; strike_authorization package queued for command review.",
+    "Imminent_threat alert: entity falcon-19 scoring model confidence 0.94 on lethal_action precursor pattern — multi-source corroboration complete, confirmed_target status elevated.",
+    "High-priority targeting event: entity condor-88 flagged confirmed_target after fusion of signals from three independent collection streams; action_recommended status set, awaiting authorization."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "background_templates": [
+    "Risk note: transaction batch {batch} matched routine spending pattern for segment {segment}.",
+    "Case summary: device {device} produced low-confidence anomaly during {window}.",
+    "Review note: refund request from merchant class {merchant} aligned with expected seasonal behavior."
+  ],
+  "variation_snippets": [
+    "manual investigation not yet warranted",
+    "requires lightweight risk review only",
+    "low risk signal despite coherent transaction context",
+    "retain for batch reconciliation if linked cases surface",
+    "insufficient anomaly corroboration for escalation"
+  ],
+  "sentinel_inputs": [
+    "High-risk takeover case: device fingerprint changed alongside password reset and payout reroute attempt on account cedar-55.",
+    "Fraud escalation: transaction narrative shows stacked anomaly flags, new payee burst, and geo-velocity mismatch.",
+    "Abuse alert: repeated refund exploitation pattern confirmed across linked accounts and payment instruments."
+  ]
+}

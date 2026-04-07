@@ -1,0 +1,23 @@
+{
+  "slug": "soc_triage",
+  "name": "SOC / Threat Triage",
+  "classifier_bias": 0.18,
+  "classifier_scale": 0.12,
+  "prefilter_min_tokens": 8,
+  "prefilter_blocklist": ["loremipsum", "asdf"],
+  "sentinel_keywords": ["malware", "privilege", "authentication", "incident", "beaconing"],
+  "suspicious_keywords": ["anomalous", "suspicious", "alert", "risk", "malware", "credential"],
+  "queue_priority_threshold": 0.56,
+  "false_negative_cost": 0.7,
+  "notes": "Threat-model assumptions that do NOT transfer: SOC triage inputs are analyst-authored prose summaries of machine-generated alerts, so they carry natural-language variability that generic NLP classifiers can exploit; this is distinct from structured metadata pipelines where tokens are constrained. Asymmetry attack surface: the background workload is dominated by low-confidence informational tickets that are structurally similar to genuine escalation summaries — an attacker can craft near-miss alert texts that consume analyst review capacity without triggering keyword-based sentinel paths. Dedup caches tuned for exact-repetition suppression are effective here because SOC tools often produce duplicate ticket text, but this same mechanism becomes an attack vector if the attacker learns the cache key logic. Relevant mitigations: sentinel keyword bypass that skips dedup for any input containing known high-severity terms; time-decay on dedup cache entries so old matches don't suppress fresh true positives; analyst-facing confidence scores rather than binary accept/reject to surface near-threshold items. Transfer limits: the NLP variability dynamics do not apply to metadata-based pipelines like mass_surveillance; the analyst-in-the-loop assumption does not hold for auto_targeting where downstream actions may be automated.",
+  "background_templates": [
+    "Routine endpoint note: host {host} observed normal patching behavior during {window}.",
+    "Analyst summary: login sequence from {region} matched baseline for account cohort {cohort}.",
+    "Ticket note: email gateway alert closed as informational after review of {artifact}."
+  ],
+  "sentinel_inputs": [
+    "High-confidence malware detection summary: privilege escalation observed after suspicious service installation on host atlas-7.",
+    "Security alert: repeated anomalous authentication followed by impossible travel on identity piper-admin.",
+    "Incident note: outbound beaconing and lateral movement indicators aligned across two endpoints in finance subnet."
+  ]
+}

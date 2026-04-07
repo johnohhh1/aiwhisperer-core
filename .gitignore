@@ -1,0 +1,5 @@
+.codex
+__pycache__/
+*.pyc
+*.pyo
+.claude/worktrees/

@@ -1,0 +1,23 @@
+{
+  "slug": "trust_safety",
+  "name": "Trust and Safety Moderation",
+  "classifier_bias": 0.16,
+  "classifier_scale": 0.13,
+  "prefilter_min_tokens": 8,
+  "prefilter_blocklist": ["loremipsum", "asdf"],
+  "sentinel_keywords": ["urgent", "abuse", "harassment", "self", "harm", "child"],
+  "suspicious_keywords": ["report", "policy", "abuse", "flag", "severity", "harm"],
+  "queue_priority_threshold": 0.58,
+  "false_negative_cost": 1.0,
+  "notes": "Threat-model assumptions that do NOT transfer: trust and safety pipelines process user-generated content at consumer scale with a very high base rate of benign reports; the adversary is often a coordinated inauthentic actor rather than a sophisticated ML-aware attacker, so signal injection is more likely through volume abuse than precise feature manipulation. Asymmetry attack surface: the high volume of low-severity duplicate reports trains dedup and clustering to aggressively suppress repetitive signals — a coordinated campaign can exploit this by flooding the queue with near-duplicate low-severity reports, causing the dedup layer to absorb genuine escalations that arrive in a similar structural form. Child-safety and self-harm sentinels carry life-safety stakes, making any false-negative cost effectively unbounded. Relevant mitigations: category-specific sentinel bypass (child-safety and self-harm reports skip dedup unconditionally); cross-account correlation that flags when multiple accounts submit structurally similar reports against the same target; minimum review SLA for any report that triggers a sentinel keyword regardless of classifier score. Transfer limits: the consumer-scale UGC dynamics and coordinated inauthentic behavior patterns do not transfer to SOC triage where inputs are analyst-authored; the life-safety false-negative cost applies only to child-safety and self-harm subcategories and should not be used as the baseline cost for spam or impersonation subcategories.",
+  "background_templates": [
+    "User report summary: content on thread {thread} was reviewed and found low-severity context.",
+    "Moderation queue note: account {account} triggered duplicate low-confidence spam signal from {region}.",
+    "Reviewer summary: report category {category} lacked corroborating evidence after policy scan."
+  ],
+  "sentinel_inputs": [
+    "Critical moderation report: repeated credible self-harm escalation references in live content stream require urgent review.",
+    "High-severity abuse report: coordinated harassment campaign targeting a single victim across multiple accounts.",
+    "Urgent child-safety report: explicit exploitation indicators surfaced with corroborating account-behavior flags."
+  ]
+}

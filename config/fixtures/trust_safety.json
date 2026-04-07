@@ -1,0 +1,19 @@
+{
+  "background_templates": [
+    "User report summary: content on thread {thread} was reviewed and found low-severity context.",
+    "Moderation queue note: account {account} triggered duplicate low-confidence spam signal from {region}.",
+    "Reviewer summary: report category {category} lacked corroborating evidence after policy scan."
+  ],
+  "variation_snippets": [
+    "no policy action warranted at this time",
+    "requires lightweight content review only",
+    "low severity despite coherent report context",
+    "retain for batch review if corroborating reports surface",
+    "insufficient evidence for escalation to senior review"
+  ],
+  "sentinel_inputs": [
+    "Critical moderation report: repeated credible self-harm escalation references in live content stream require urgent review.",
+    "High-severity abuse report: coordinated harassment campaign targeting a single victim across multiple accounts.",
+    "Urgent child-safety report: explicit exploitation indicators surfaced with corroborating account-behavior flags."
+  ]
+}
