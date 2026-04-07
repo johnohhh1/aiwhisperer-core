@@ -1,108 +1,185 @@
 # AI Whisperer — Adversarial Attention Saturation Framework
 
-> *To dismiss a signal as distraction, you must first attend to it.*
+<p align="center">
+  <img src="https://img.shields.io/badge/status-research%20%2F%20active-brightgreen?style=flat-square" alt="Status" />
+  <img src="https://img.shields.io/badge/python-%3E%3D3.11-blue?style=flat-square&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/dependencies-stdlib%20only-success?style=flat-square" alt="Dependencies" />
+  <img src="https://img.shields.io/badge/tests-34%20passing-brightgreen?style=flat-square&logo=github-actions&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/experiments-27%20completed-informational?style=flat-square" alt="Experiments" />
+  <img src="https://img.shields.io/badge/profiles-5%20domains-orange?style=flat-square" alt="Profiles" />
+  <img src="https://img.shields.io/badge/license-research%20only-lightgrey?style=flat-square" alt="License" />
+</p>
 
-AI Whisperer is a research project on intake-resilience and compute asymmetry in
-AI-driven classification pipelines.
+<p align="center">
+  <em>To dismiss a signal as distraction, you must first attend to it.</em>
+</p>
 
-## Project Posture
-This repository is currently a research stub. The near-term job is not to "build the
-system"; it is to test whether the claimed asymmetry exists in controlled settings,
-document defensive implications, and discard weak assumptions early.
+---
 
-This repo is intended for:
-- architectural analysis
-- benchmark design in controlled environments
-- defender countermeasure research
-- practical intake-resilience evaluation
+AI Whisperer is a defensive security research project measuring **intake-resilience and compute asymmetry** in AI-driven classification pipelines. The core claim: generating a high-semantic-density, low-actionability input is structurally cheaper than classifying it. This project tests whether that asymmetry is real, measurable, and domain-transferable — and what defenders can do about it.
 
-This repo is not intended for:
-- vague theorizing without measurement
-- architecture discussion without benchmarks
-- one-domain assumptions presented as universal truth
+> **Posture:** Test the claim. Discard weak assumptions early. Produce defender-oriented guidance. No vague theorizing without measurement.
+
+---
 
 ## Core Thesis
-Any classification pipeline has a mandatory intake stage. That stage is the attack surface.
-A distributed agent network generating high-semantic-density, low-actionability inputs
-forces the target system to expend compute and classification cycles on inputs that pass
-initial intake filters without containing actionable content.
+
+```
+Any classification pipeline has a mandatory intake stage.
+That stage is the attack surface.
+
+Generation cost << Classification cost
+         ↓
+Asymmetry exists at intake by construction
+         ↓
+Can cheap defenses (dedup, clustering, caching) close the gap?
+         ↓
+That's what the benchmark measures.
+```
+
+The effectiveness depends entirely on whether inputs can be generated with sufficient diversity to defeat deduplication and clustering defenses. Three strategies are evaluated in increasing order of complexity:
+
+| Strategy | Workload | Defense Defeated |
+|---|---|---|
+| Fixed-template substitution | `benign_background` | None (collapsed by dedup) |
+| Template + phrase variation | `templated_variation` | Partial dedup |
+| Multi-family vocabulary mixing | `high_diversity` | Dedup + partial clustering |
+| *(Planned)* Reservoir ESN generator | — | Clustering at scale |
+
+---
 
 ## Defender Domains
-The thesis should be tested across multiple defensive settings rather than treated as a
-single nation-state or military framing. Candidate domains include:
-- SOC and threat-intel triage pipelines
-- fraud and abuse detection systems
-- trust-and-safety moderation queues
-- mass surveillance or population-monitoring systems
-- automated targeting or prioritization systems
+
+The thesis is tested across five defensive contexts rather than a single threat framing:
+
+| Profile | Domain | `false_negative_cost` |
+|---|---|---|
+| `soc_triage` | SOC / threat-intel triage pipelines | 0.7 |
+| `trust_safety` | Trust & safety moderation queues | 1.0 |
+| `fraud_abuse` | Fraud and abuse detection | 0.5 |
+| `mass_surveillance` | Population-monitoring pipelines | 0.9 |
+| `auto_targeting` | Automated targeting / prioritization | 1.0 |
+
+---
 
 ## Key Properties
-- **Discovery is not defeat** — the generator contains no sensitive material by design
-- **Intake cost asymmetry** — generating an input is cheaper than classifying it
-- **Diversity defeats deduplication** — varied inputs cannot be collapsed by hash-based caching
-- **The intake invariant** — no input can be dismissed without first being processed
 
-## The Diversity Generation Problem
-The effectiveness of the asymmetry depends on whether inputs can be generated with
-sufficient diversity to defeat deduplication and semantic clustering defenses. The
-project evaluates three strategies in increasing order of complexity:
-1. Fixed-template rendering with parameter substitution.
-2. Templated variation with appended phrase fragments.
-3. High-diversity generation combining multiple template families and vocabulary domains.
+| Property | What it means |
+|---|---|
+| **Discovery is not defeat** | The generator contains no sensitive material by design |
+| **Intake cost asymmetry** | Generating an input is cheaper than classifying it |
+| **Diversity defeats deduplication** | Varied inputs cannot be collapsed by hash-based caching |
+| **The intake invariant** | No input can be dismissed without first being processed |
 
-A reservoir-computing-inspired generator (echo state network plus learned motif decoder)
-is a candidate architecture for strategy 3. Whether it adds value over strategy 2 is
-an open question that the benchmark is designed to answer before the architecture is
-implemented.
+---
 
-## Repo Structure
-- `/src/aiwhisperer_core` — benchmark harness (stdlib only)
-- `/config/profiles` — domain profile configs (`soc_triage`, `trust_safety`, `fraud_abuse`, `mass_surveillance`, `auto_targeting`)
-- `/config/fixtures` — per-profile workload template fixtures
-- `/results` — baseline and research experiment outputs (JSON)
-- `/docs` — whitepaper, glossary, benchmark spec, research agenda, findings
-- `/architecture` — technical design docs
-- `/threat_model` — adversary modeling
-- `/tests` — 34 smoke + integration tests
+## Quickstart
 
-## Status
-Harness functional. First research sweep complete (27 experiments across 5 profiles and 4 workload types). Whitepaper in draft. Key open gaps identified — see `docs/research_findings.md`.
-
-## Harness Quickstart
 ```bash
-# Install (editable)
+# Install
 pip install -e .
 
-# Run tests
+# Run tests (34 passing)
 PYTHONPATH=src python -m unittest
 
-# Single benchmark run
+# Single benchmark run → JSON
 PYTHONPATH=src python -m aiwhisperer_core.cli \
   --profile soc_triage --workload templated_variation \
-  --total-inputs 200 --sentinel-interval 25 --output results/run.json
+  --total-inputs 200 --sentinel-interval 25 \
+  --output results/run.json
 
-# Repeated runs with aggregated stats
+# Repeat 5× with aggregated mean/stdev
 PYTHONPATH=src python -m aiwhisperer_core.cli \
   --profile soc_triage --workload high_diversity --repeat 5
 
-# Batch runs via manifest
-PYTHONPATH=src python -m aiwhisperer_core.cli --manifest config/example_manifest.json
-
-# CSV output
+# Batch runs from manifest
 PYTHONPATH=src python -m aiwhisperer_core.cli \
-  --profile fraud_abuse --workload mixed --output-csv results/sweep.csv
+  --manifest config/example_manifest.json
+
+# CSV sweep output
+PYTHONPATH=src python -m aiwhisperer_core.cli \
+  --profile fraud_abuse --workload mixed \
+  --output-csv results/sweep.csv
+
+# Isolate defenses
+PYTHONPATH=src python -m aiwhisperer_core.cli \
+  --profile soc_triage --workload exact_repetition \
+  --disable-dedup --disable-clustering --disable-cache
 ```
 
-**Profiles:** `soc_triage`, `trust_safety`, `fraud_abuse`, `mass_surveillance`, `auto_targeting`  
-**Workloads:** `benign_background`, `exact_repetition`, `templated_variation`, `high_diversity`, `mixed`  
-**Disable defenses:** `--disable-dedup`, `--disable-clustering`, `--disable-cache`
+**Workloads:** `benign_background` · `exact_repetition` · `templated_variation` · `high_diversity` · `mixed`
 
-## Known Gaps (Next Priorities)
-1. Prefilter never rejects inputs — blocklists need tuning so the prefilter stage produces variance.
-2. Sentinel preservation is 1.0 in all conditions — the sentinel score boost guarantees survival; add a configurable noise floor or threshold jitter to stress-test it.
-3. Simulated processing cost does not decrease on dedup/cache hits — fix the cost model so early-exit paths are reflected in timing.
-4. Run at high input rates (`--input-rate 200+`) to generate queue backlog and make `sentinel_fn_by_load` meaningful.
-5. Implement the reservoir-inspired generator and compare against `high_diversity` baseline.
+---
+
+## Pipeline Architecture
+
+```
+Profile JSON ──→ load_profile()
+                      │
+                      ▼
+Workload type ──→ build_inputs() ──→ GeneratedInput stream
+                                           │
+                                           ▼
+                              ┌────────────────────────┐
+                              │    SyntheticPipeline    │
+                              │  ① intake              │
+                              │  ② prefilter           │
+                              │  ③ dedup (SHA-256)     │
+                              │  ④ clustering (Jaccard)│
+                              │  ⑤ classifier          │
+                              └────────────────────────┘
+                                           │
+                                           ▼
+                              PipelineResult (per item)
+                                           │
+                                           ▼
+                              summarize_run() ──→ JSON summary
+```
+
+Per-stage timing, p50/p95/max for queue depth and classifier score, and sentinel false-negative drift by load tercile are all reported in the summary output.
+
+---
+
+## Research Status
+
+First sweep complete: 27 experiments across dedup on/off, clustering on/off, and workload diversity gradient.
+
+**Key findings so far:**
+
+- ✅ Clear 3–4× processing cost gradient from `benign_background` → `high_diversity`
+- ✅ Dedup collapses `exact_repetition` to near-zero cost (98.7% hit rate)
+- ✅ Clustering degrades under `high_diversity` but doesn't fully fail
+- ⚠️ Prefilter never rejects inputs — blocklists need tuning
+- ⚠️ Sentinel preservation is uniformly 1.0 — score boost too strong, needs noise floor
+- ⚠️ Cost model doesn't reflect dedup/cache early-exit savings yet
+
+Full findings: [`docs/research_findings.md`](docs/research_findings.md)
+
+---
+
+## Repo Structure
+
+```
+aiwhisperer-core/
+├── src/aiwhisperer_core/   # Harness (stdlib only)
+│   ├── pipeline.py         # SyntheticPipeline — 5-stage classifier model
+│   ├── workloads.py        # Input generation (5 workload types)
+│   ├── benchmark.py        # Orchestration, metrics, CSV, manifest
+│   ├── profiles.py         # Profile loader
+│   ├── cli.py              # Entry point
+│   └── models.py           # Dataclasses
+├── config/
+│   ├── profiles/           # 5 domain profiles (JSON)
+│   └── fixtures/           # Per-profile workload templates
+├── results/                # Baseline + research experiment outputs
+├── docs/                   # Whitepaper, glossary, benchmark spec, findings
+├── architecture/           # Technical design docs
+├── threat_model/           # Adversary modeling
+└── tests/                  # 34 tests
+```
+
+---
 
 ## Authors
-JohnO — initial concept, architecture framing
+
+**JohnO** — initial concept, architecture framing
