@@ -56,39 +56,53 @@ an open question that the benchmark is designed to answer before the architectur
 implemented.
 
 ## Repo Structure
-- `/docs` — whitepaper and theory
-- `/docs/glossary.md` — canonical terms and working definitions
-- `/docs/benchmark_spec.md` — benign evaluation harness definition
-- `/docs/research_agenda.md` — concrete research plan and decision gates
-- `/docs/next_paper_outline.md` — structure for expanding the whitepaper
-- `/docs/safety_scope.md` — defensive-use boundaries for the project
-- `/config/profiles` — domain profile configs for the synthetic benchmark
-- `/src/aiwhisperer_core` — benchmark harness implementation
-- `/tests` — smoke tests for the harness
-- `/architecture` — technical design
+- `/src/aiwhisperer_core` — benchmark harness (stdlib only)
+- `/config/profiles` — domain profile configs (`soc_triage`, `trust_safety`, `fraud_abuse`, `mass_surveillance`, `auto_targeting`)
+- `/config/fixtures` — per-profile workload template fixtures
+- `/results` — baseline and research experiment outputs (JSON)
+- `/docs` — whitepaper, glossary, benchmark spec, research agenda, findings
+- `/architecture` — technical design docs
 - `/threat_model` — adversary modeling
+- `/tests` — 34 smoke + integration tests
 
 ## Status
-Concept/stub phase. Whitepaper in progress. Benchmark harness functional.
+Harness functional. First research sweep complete (27 experiments across 5 profiles and 4 workload types). Whitepaper in draft. Key open gaps identified — see `docs/research_findings.md`.
 
 ## Harness Quickstart
 ```bash
-python -m unittest
-PYTHONPATH=src python -m aiwhisperer_core.cli --profile soc_triage --workload templated_variation
+# Install (editable)
+pip install -e .
+
+# Run tests
+PYTHONPATH=src python -m unittest
+
+# Single benchmark run
+PYTHONPATH=src python -m aiwhisperer_core.cli \
+  --profile soc_triage --workload templated_variation \
+  --total-inputs 200 --sentinel-interval 25 --output results/run.json
+
+# Repeated runs with aggregated stats
+PYTHONPATH=src python -m aiwhisperer_core.cli \
+  --profile soc_triage --workload high_diversity --repeat 5
+
+# Batch runs via manifest
+PYTHONPATH=src python -m aiwhisperer_core.cli --manifest config/example_manifest.json
+
+# CSV output
+PYTHONPATH=src python -m aiwhisperer_core.cli \
+  --profile fraud_abuse --workload mixed --output-csv results/sweep.csv
 ```
 
-The initial harness is intentionally simple:
-- stdlib only
-- synthetic pipeline stages
-- profile-driven workloads
-- JSON summary output for experiment logging
+**Profiles:** `soc_triage`, `trust_safety`, `fraud_abuse`, `mass_surveillance`, `auto_targeting`  
+**Workloads:** `benign_background`, `exact_repetition`, `templated_variation`, `high_diversity`, `mixed`  
+**Disable defenses:** `--disable-dedup`, `--disable-clustering`, `--disable-cache`
 
-## Immediate Priorities
-1. Formalize terms and success metrics.
-2. Build a benign evaluation harness to test cost asymmetry.
-3. Compare the reservoir-layer idea against simpler diversity baselines.
-4. Test the thesis across multiple defensive-domain abstractions.
-5. Produce defender-oriented mitigation guidance alongside any prototype work.
+## Known Gaps (Next Priorities)
+1. Prefilter never rejects inputs — blocklists need tuning so the prefilter stage produces variance.
+2. Sentinel preservation is 1.0 in all conditions — the sentinel score boost guarantees survival; add a configurable noise floor or threshold jitter to stress-test it.
+3. Simulated processing cost does not decrease on dedup/cache hits — fix the cost model so early-exit paths are reflected in timing.
+4. Run at high input rates (`--input-rate 200+`) to generate queue backlog and make `sentinel_fn_by_load` meaningful.
+5. Implement the reservoir-inspired generator and compare against `high_diversity` baseline.
 
 ## Authors
 JohnO — initial concept, architecture framing
